@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.psike.pantrypilot"
+    namespace = "com.psike.household"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.psike.pantrypilot"
+        applicationId = "com.psike.household"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
