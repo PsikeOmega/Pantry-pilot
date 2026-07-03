@@ -7,9 +7,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,32 +24,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK and capture log
-        id: build
+      - name: Build debug APK
         shell: bash
         run: |
           set +e
           ./gradlew assembleDebug > build-log.txt 2>&1
           STATUS=$?
           cat build-log.txt
-          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           exit $STATUS
 
-      - name: Save latest failure log
-        if: failure()
-        run: |
-          mkdir -p ci
-          {
-            echo "PantryPilot latest CI failure log"
-            echo "Commit: $GITHUB_SHA"
-            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-            echo
-            cat build-log.txt
-          } > ci/latest-build-log.txt
-
-      - name: Commit latest failure log
-        if: failure()
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          commit_message: "Update latest CI failure log"
-          file_pattern: ci/latest-build-log.txt
+          name: latest-build-log
+          path: build-log.txt
+          retention-days: 5
