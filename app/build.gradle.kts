@@ -12,8 +12,8 @@ android {
         applicationId = "com.psike.pantrypilot"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1"
+        versionCode = 2
+        versionName = "0.1.1"
     }
 
     compileOptions {
@@ -28,6 +28,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -40,4 +44,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
 }

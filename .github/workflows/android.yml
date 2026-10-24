@@ -24,11 +24,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build debug APK
+      - name: Test, lint, and build debug APK
         shell: bash
         run: |
           set +e
-          ./gradlew assembleDebug > build-log.txt 2>&1
+          ./gradlew testDebugUnitTest lintDebug assembleDebug > build-log.txt 2>&1
           STATUS=$?
           cat build-log.txt
           exit $STATUS
@@ -40,3 +40,21 @@ jobs:
           name: latest-build-log
           path: build-log.txt
           retention-days: 5
+
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pantry-Pilot-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            app/build/reports/tests/
+            app/build/test-results/
+            app/build/reports/lint-results-debug.html
